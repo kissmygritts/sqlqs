@@ -14,6 +14,19 @@ const formatArray = values => {
   return values === undefined ? '' : formatValue(values)
 }
 
+const hasOperator = value => value.includes('.')
+
+const hasMany = value => value.includes(',')
+
+const getCriteria = criteria => {
+  let c = hasOperator(criteria) ? criteria.split('.')[1] : criteria
+  return hasMany(c) ? c.split(',') : c
+}
+
+const getOperator = criteria => {
+  return hasOperator(criteria) ? operators[criteria.split('.')[0]] : hasMany(criteria) ? 'IN' : '='
+}
+
 const operators = {
   eq: '=',
   gte: '>=',
@@ -25,14 +38,11 @@ const operators = {
 }
 
 const parse = query => {
-  return Object.keys(query).map(m => {
-    let criteria = query[m].split('.')[1].split(',')
-    return {
-      column: m,
-      operator: operators[query[m].split('.')[0]],
-      criteria: criteria.length > 1 ? criteria : criteria[0]
-    }
-  })
+  return Object.keys(query).map(m => ({
+    column: m,
+    operator: getOperator(query[m]),
+    criteria: getCriteria(query[m])
+  }))
 }
 
 module.exports = {
@@ -40,5 +50,9 @@ module.exports = {
   wrapText,
   formatValue,
   formatArray,
+  hasOperator,
+  hasMany,
+  getCriteria,
+  getOperator,
   parse
 }
