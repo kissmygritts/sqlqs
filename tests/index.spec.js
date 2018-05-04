@@ -175,10 +175,10 @@ describe('parse', () => {
       expect(predicate[0]).toEqual({ column: 'x', operator: '=', criteria: 'one' })
     })
 
-    // test('if there is an operator use operator', () => {
-    //   let predicate = parse({ x: 'eq.one' })
-    //   expect(predicate[0]).toEqual({ column: 'x', operator: '=', criteria: 'one' })
-    // })
+    test('if there is an operator use operator', () => {
+      let predicate = parse({ x: 'eq.one' })
+      expect(predicate[0]).toEqual({ column: 'x', operator: '=', criteria: 'one' })
+    })
 
     test('if there is not an operator and criteria is an array assume "IN"', () => {
       let predicate = parse({ x: 'one,two' })
