@@ -45,6 +45,12 @@ const parse = query => {
   }))
 }
 
+const sqlize = parsed => {
+  return parsed
+    .map(m => `${m.column} ${m.operator} ${formatArray(m.criteria)}`)
+    .reduce((acc, curr) => acc + ' AND ' + curr)
+}
+
 module.exports = {
   safeText,
   wrapText,
@@ -54,5 +60,6 @@ module.exports = {
   hasMany,
   getCriteria,
   getOperator,
-  parse
+  parse,
+  sqlize
 }

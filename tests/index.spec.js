@@ -7,7 +7,8 @@ const {
   hasMany,
   getCriteria,
   getOperator,
-  parse
+  parse,
+  sqlize
 } = require('../index')
 
 describe('utils', () => {
@@ -72,6 +73,10 @@ describe('utils', () => {
 
     test('format SQL ready number if value is not an array', () => {
       expect(formatArray('1')).toBe(1)
+    })
+
+    test(`format undefined to ''`, () => {
+      expect(formatArray(undefined)).toBe('')
     })
   })
 
@@ -184,5 +189,30 @@ describe('parse', () => {
       let predicate = parse({ x: 'one,two' })
       expect(predicate[0]).toEqual({ column: 'x', operator: 'IN', criteria: ['one', 'two'] })
     })
+  })
+})
+
+describe('sqlize', () => {
+  test('properly SQLize when criteria is a number', () => {
+    let where = sqlize([{ column: 'x', operator: '=', criteria: '1000' }])
+    expect(where).toBe('x = 1000')
+  })
+
+  test('properly SQLize when criteria is a string', () => {
+    let where = sqlize([{ column: 'x', operator: '=', criteria: 'one' }])
+    expect(where).toBe(`x = 'one'`)
+  })
+
+  test('properly SQLize when criteria is a string', () => {
+    let where = sqlize([{ column: 'x', operator: 'IN', criteria: ['one', 'two'] }])
+    expect(where).toBe(`x IN ('one','two')`)
+  })
+
+  test('properly SQLize when criteria is a string', () => {
+    let where = sqlize([
+      { column: 'x', operator: '=', criteria: 'blue' },
+      { column: 'y', operator: '=', criteria: 'yellow' }
+    ])
+    expect(where).toBe(`x = 'blue' AND y = 'yellow'`)
   })
 })
