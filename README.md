@@ -1,11 +1,15 @@
+## sqlqs - sql query strings
+
+[![Build Status](https://travis-ci.org/kissmygritts/sqlqs.svg?branch=master)](https://travis-ci.org/kissmygritts/sqlqs)
+
 A very simple and rudimentary query string to SQL predicate parser.
 
-Heavily influenced by the query string methods from the PostgREST API server, this module will create SQL WHERE clause predicates from the query string. With PostgREST the query string handles almost all of the database filtering and logic. For instance, to filter the database the query string may look like the following, `?x=eq.10`. Where x is the column to filter, `eq` is the operator to use, and `10` is the criteria to filter by. I call these a predicate object. I found this query string structure very flexible and decided to try and recreate it with Node.
+Heavily influenced by the query string methods from the PostgREST API server, this module will create SQL WHERE clause predicates from the query string. With PostgREST the query string handles almost all of the database filtering. For instance, to filter the database the query string may look like the following, `?x=eq.10`. Where x is the column to filter, `eq` is the operator to use, and `10` is the criteria to filter. I call these a predicate object. I found this query string structure very flexible and decided to try and recreate it with Node.
 
 ## Use
 
 ``` javascript
-const sqlqs = require('sqlqs')
+const { parse, sqlize } = require('sqlqs')
 
 let qs = {
   class: 'in.Mammal,Bird',
@@ -13,31 +17,21 @@ let qs = {
   id: 'gt.1000'
 }
 
-let predicates = sqlqs.parse(qs)
+parse(qs)
+
 // returns
 [
-  {
-    column: 'class',
-    operator: 'IN',
-    criteria: ['Mammal', 'Bird']
-  },
-  {
-    column: 'genus',
-    operator: '=',
-    criteria: 'Neotoma'
-  },
-  {
-    column: 'id',
-    operator: '>',
-    criteria: '1000'
-  }
+  {"column":"class","operator":"IN","criteria":["Mammal","Bird"]},{"column":"genus","operator":"=","criteria":"Neotoma"},
+  {"column":"id","operator":">","criteria":"1000"}
 ]
 
-// pass this object to the predicate function
-let where = sqlqs.predicate(predicates)
+sqlize(pars(qs))
+
 // returns
-'class IN (\'Mammal\',\'Bird\') AND genus = \'Neotoma\' AND id > 1000'
+"class IN ('Mammal','Bird') AND genus = 'Neotoma' AND id > 1000"
 ```
+
+[Try it on RunKit](https://runkit.com/kissmygritts/sqlqs)
 
 ## Caveats
 
