@@ -1,6 +1,6 @@
 {
   "name": "sqlqs",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Parse query string objects into SQL where clauses",
   "main": "index.js",
   "author": "Mitchell Gritts",
@@ -8,12 +8,16 @@
   "scripts": {
     "test": "jest test",
     "test:watch": "jest test --watch",
+    "lint": "node_modules/.bin/eslint index.js tests",
+    "lint:fix": "node_modules/.bin/eslint index.js tests --fix",
     "coverage": "jest --collectCoverageFrom=index.js --coverage tests",
     "travis-deploy-once": "travis-deploy-once",
-    "semantic-release": "semantic-release"
+    "release": "jest --collectCoverageFrom=index.js && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
+    "prepublish": "yarn lint:fix && yarn test && yarn coverage"
   },
   "dependencies": {},
   "devDependencies": {
+    "coveralls": "^3.0.1",
     "eslint": "^4.19.1",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.11.0",
