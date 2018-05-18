@@ -51,6 +51,8 @@ const sqlize = parsed => {
     .reduce((acc, curr) => acc + ' AND ' + curr)
 }
 
+const where = query => sqlize(parse(query))
+
 module.exports = {
   safeText,
   wrapText,
@@ -61,5 +63,6 @@ module.exports = {
   getCriteria,
   getOperator,
   parse,
-  sqlize
+  sqlize,
+  where
 }

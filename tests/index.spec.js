@@ -8,7 +8,8 @@ const {
   getCriteria,
   getOperator,
   parse,
-  sqlize
+  sqlize,
+  where
 } = require('../index')
 
 describe('utils', () => {
@@ -214,5 +215,11 @@ describe('sqlize', () => {
       { column: 'y', operator: '=', criteria: 'yellow' }
     ])
     expect(where).toBe(`x = 'blue' AND y = 'yellow'`)
+  })
+})
+
+describe('where', () => {
+  test('return a formatted where clause', () => {
+    expect(where({ x: 'eq.blue', y: 'eq.yellow' })).toBe(`x = 'blue' AND y = 'yellow'`)
   })
 })
